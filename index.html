@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./main.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h2>账户余额 <span id="amount">&&&amount&&&</span></h2>
+    <button id="btnImg">Image方法付款 1 元</button>
+    <button id="btnScript">Script方法付款 1 元</button>
+    <!-- 利用form表单的 post 请求 -->
+    <form action="/payForm" method="post" target="result">
+        <input type="text" value="1">
+        <input type="submit" id="formSub" value="Form方法付款 1 元">
+    </form>
+    <iframe src="about:blank" name="result" id="frameRes" frameborder="0"></iframe>
+    <script>
+        formSub.onclick = function(){
+            setTimeout(function(){
+                let iframe = window.frames['result'].document
+                let result = iframe.body.innerText
+                if(result === 'success'){
+                    amount.innerText = amount.innerText - 1   
+                }
+            },500)
+        }
+    </script>
+
+    <!-- 利用图片的 get 请求 -->
+    <script>
+        btnImg.onclick = function(){
+            let image = document.createElement('img')
+            image.src = '/payImage'
+            image.onload = function(){
+                alert('image方法打钱成功')
+                amount.innerText = amount.innerText - 1
+            }
+            image.onerror = function(){
+                alert('image方法打钱失败')
+            }
+        }
+    </script>
+
+    <!-- 利用 script 的 get 请求(srj方案) -->
+    <script>
+        btnScript.onclick = function(){
+            let script = document.createElement('script')
+            script.src = '/payScript'
+            document.body.appendChild(script)
+            script.onload = function(event){
+                event.currentTarget.remove()
+            }
+            script.onerror = function(){
+                alert('script方法打钱失败(此消息发自网页本身)')
+                event.currentTarget.remove()
+            }
+        }
+    </script>
+</body>
+</html>
