@@ -45,6 +45,7 @@ var server = http.createServer(function(request,response){
             response.statusCode = 200
             amount = amount - 1
             fs.writeFileSync('./db',amount)
+            response.write(fs.readFileSync('./success.png'))
             // response.write('打钱成功')
         }else{
             response.statusCode = 400
@@ -59,6 +60,42 @@ var server = http.createServer(function(request,response){
             amount = amount - 1
             fs.writeFileSync('./db',amount)
             response.write('alert("script方法打钱成功(此消息发自服务器)");amount.innerText = amount.innerText - 1')
+            // response.write('打钱成功')
+        }else{
+            response.statusCode = 400
+            // response.write('打钱失败')
+        }
+        response.end()
+    }else if(path === '/payJsonpAlpha'){
+        var amount = fs.readFileSync('./db','utf-8')
+        if(Math.random()>0.5){
+            response.setHeader('Content-Type','text/javascript')
+            response.statusCode = 200
+            amount = amount - 1
+            fs.writeFileSync('./db',amount)
+            response.write(`
+            alert("script方法打钱成功(此消息发自服务器)")
+            amount.innerText = amount.innerText - 1
+            ${query.callback}.call(undefined,${amount})
+            `)
+            // response.write('打钱成功')
+        }else{
+            response.statusCode = 400
+            // response.write('打钱失败')
+        }
+        response.end()
+    }else if(path === '/payJsonpBeta'){
+        var amount = fs.readFileSync('./db','utf-8')
+        if(Math.random()>0.5){
+            response.setHeader('Content-Type','text/javascript')
+            response.statusCode = 200
+            amount = amount - 1
+            fs.writeFileSync('./db',amount)
+            response.write(`
+            alert("script方法打钱成功(此消息发自服务器)")
+            amount.innerText = amount.innerText - 1
+            ${query.callback}.call(undefined,${amount})
+            `)
             // response.write('打钱成功')
         }else{
             response.statusCode = 400
