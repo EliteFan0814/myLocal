@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./style.css">
     <script src="./main.js"></script>
-    <script src="./xxx.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <title>跨域和JSONP的由来</title>
 </head>
@@ -22,96 +21,18 @@
     <iframe src="about:blank" name="result" id="frameRes" frameborder="1" width="125px" height="30px"></iframe>
     <hr>
     <button id="btnImg">Image 方法付款 1 元</button>
-    <hr>
     <button id="btnScript">Script 方法付款 1 元</button>
-    <hr>
     <button id="btnJsonpAlpha">Jsonp 方法付款 1 元 alpha版</button>
-    <hr>
     <button id="btnJsonpBeta">Jsonp 方法付款 1 元 bata版</button>
+    <button id="btnJqueryJsonp">Jquery JSONP 方法付款 1 元</button>
     <hr>
-    <button id="btnJqueryJsonp">Jquery AJAX Jsonp 方法付款 1 元</button>
+    <button id="btnAJAXXML">AJAX 请求 XML 文本</button>
+    <button id="btnAJAXJSON">AJAX 请求 JSON 文本</button>
     <hr>
-    <script>
-        // form提交，转移到iframe刷新
-        formSub.onclick = function () {
-            setTimeout(function () {
-                let iframe = window.frames['result'].document
-                let result = iframe.body.innerText
-                if (result === 'success') {
-                    amount.innerText = amount.innerText - 1
-                }
-            }, 1000)
-        }
-        // 利用图片的 get 请求
-        btnImg.onclick = function () {
-            let image = document.createElement('img')
-            image.src = '/payImage'
-            image.onload = function () {
-                alert('image方法打钱成功')
-                amount.innerText = amount.innerText - 1
-            }
-            image.onerror = function () {
-                alert('image方法打钱失败')
-            }
-        }
-        // 利用 script 的 get 请求(srj方案)
-        btnScript.onclick = function () {
-            let script = document.createElement('script')
-            script.src = '/payScript'
-            document.body.appendChild(script)
-            script.onload = function (event) {
-                event.currentTarget.remove()
-            }
-            script.onerror = function () {
-                alert('script方法打钱失败(此消息发自网页本身)')
-                event.currentTarget.remove()
-            }
-        }
-        // 利用 JSONP 的 get 请求 alpha测试版
-        function callFunction(result) {
-            alert('这是调用的客户端 callback 函数,剩余存款为：' + result)
-        }
-        btnJsonpAlpha.onclick = function () {
-            let script = document.createElement('script')
-            script.src = 'http://server.com:8888/payJsonpAlpha?callback=callFunction'
-            document.body.appendChild(script)
-            script.onload = function (event) {
-                event.currentTarget.remove()
-            }
-            script.onerror = function () {
-                alert('script方法打钱失败(此消息发自网页本身)')
-                event.currentTarget.remove()
-            }
-        }
-        // 利用 JSONP 的 get 请求 beta测试版
-        btnJsonpBeta.onclick = function () {
-            let script = document.createElement('script')
-            let funcName = 'fpc' + parseInt(Math.random()*10000)
-
-            window[funcName] = function(result){
-                alert('这是调用的客户端 callback 函数,剩余存款为：' + result)
-            }
-            script.src = 'http://server.com:8888/payJsonpBeta?callback=' + funcName
-            document.body.appendChild(script)
-            script.onload = function (event) {
-                event.currentTarget.remove()
-            }
-            script.onerror = function () {
-                alert('script方法打钱失败(此消息发自网页本身)')
-                event.currentTarget.remove()
-            }
-        }
-        // 利用 jQuery 中的 JSONP
-        btnJqueryJsonp.onclick = function(){
-            $.ajax({
-                url: 'http://server.com:8888/payJquery',
-                dataType: 'jsonp',
-                success: function(result){
-                    alert('这是调用的客户端 callback 函数,剩余存款为：' + result)
-                }
-            })
-        }
-    </script>
+    <button id="btnAJAXJSONCross">AJAX 跨域请求 JSON 文本</button>
+    <button id="btnAJAXJSONCrossCORS">AJAX CORS 跨域请求 JSON 文本</button>
+    <button id="btnJquerytest">Jquery AJAX test</button>
+    <hr>
 </body>
 
 </html>
