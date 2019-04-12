@@ -34,6 +34,7 @@ var server = http.createServer(function (request, response) {
     } else if (path === '/payForm' && method.toUpperCase() === 'POST') {
         var amount = fs.readFileSync('./db', 'utf-8')
         if (Math.random() > 0.5) {
+            response.statusCode = 200
             amount = amount - 1
             fs.writeFileSync('./db', amount)
             response.write('success')
@@ -63,8 +64,10 @@ var server = http.createServer(function (request, response) {
             response.statusCode = 200
             amount = amount - 1
             fs.writeFileSync('./db', amount)
-            response.write('alert("script方法打钱成功(此消息发自服务器)");amount.innerText = amount.innerText - 1')
-            // response.write('打钱成功')
+            response.write(` 
+            alert("script方法打钱成功(此消息发自服务器)")
+            amount.innerText = amount.innerText - 1')
+            `) 
         } else {
             response.statusCode = 400
             // response.write('打钱失败')
@@ -189,6 +192,41 @@ var server = http.createServer(function (request, response) {
             `)
         } else {
             response.statusCode = 400
+            response.write(`
+            {
+                "note":{
+                    "from":"xxx",
+                    "to":"xxx",
+                    "body":"xxx xxx xxx"
+                }
+            }
+            `)
+        }
+        response.end()
+    } else if (path === '/payScriptPromise') {
+        if (Math.random() > 0.5) {
+            response.setHeader('Content-Type', 'text/json')
+            response.statusCode = 200
+            response.write(` 
+            {
+                "note":{
+                    "from":"fpc",
+                    "to":"syq",
+                    "body":"i love you"
+                }
+            }
+            `) 
+        } else {
+            response.statusCode = 400
+            response.write(` 
+            {
+                "note":{
+                    "from":"xxx",
+                    "to":"xxx",
+                    "body":"xxx xxx xxx"
+                }
+            }
+            `) 
         }
         response.end()
     } else {

@@ -12,7 +12,7 @@ window.onload = function () {
     // 利用图片的 get 请求
     btnImg.onclick = function () {
         let image = document.createElement('img')
-        image.src = '/payImage'
+        image.src = 'http://server.com:8888/payImage'
         image.onload = function () {
             alert('image方法打钱成功')
             amount.innerText = amount.innerText - 1
@@ -101,8 +101,7 @@ window.onload = function () {
     // 利用 AJAX 的 XMLHttpRequest 请求一段 JSON (不能跨域)
     btnAJAXJSON.onclick = function () {
         let request = new XMLHttpRequest()
-        // request.open('post', 'http://client.com:7777/AJAXJSON')
-        request.open('post', 'http://server.com:8888/AJAXJSON')
+        request.open('post', 'http://client.com:7777/AJAXJSON')
         request.send()
         request.onreadystatechange = function () {
             if (request.readyState === 4) {
@@ -159,15 +158,35 @@ window.onload = function () {
         request.send()
     }
     btnJquerytest.onclick = function () {
-        let script = document.createElement('script')
-        script.src = 'https://testapi.internet.bs/Domain/Check?ApiKey=testapi&Password=testpass&Domain=example.com'
-        document.body.appendChild(script)
-        script.onload = function (event) {
-            console.log(event.currentTarget)
+        let request = new XMLHttpRequest()
+        request.open('post', 'http://client.com:7777/AJAXJSONCrossCORS')
+        request.setRequestHeader('fpc','syq')
+        // request.setRequestHeader('Content-Type','x-www-form-urlencoded')
+        request.send('这是我设置的第四部分')
+        request.onreadystatechange = function () {
+            if (request.readyState === 4) {
+                if (request.status >= 200 && request.status < 300) {
+                    let string = request.responseText
+                    console.log('请求成功' + string)
+                    let obj = window.JSON.parse(string)
+                    console.log(obj.note.body)
+                } else {
+                    console.log('请求失败')
+                    let string = request.responseText
+                    console.log(string)
+                }
+            }
         }
-        script.onerror = function () {
-            alert('失败')
-        }
+
+        // let script = document.createElement('script')
+        // script.src = 'https://testapi.internet.bs/Domain/Check?ApiKey=testapi&Password=testpass&Domain=example.com'
+        // document.body.appendChild(script)
+        // script.onload = function (event) {
+        //     console.log(event.currentTarget)
+        // }
+        // script.onerror = function () {
+        //     alert('失败')
+        // }
 
         // let request = new XMLHttpRequest()
         // request.open('post','https://testapi.internet.bs/Domain/Check?ApiKey=testapi&Password=testpass&Domain=example.com')
@@ -191,5 +210,25 @@ window.onload = function () {
         //         console.log(result)
         //     }
         // })
+    }
+    btnJqueryPromise.onclick = function () {
+        $.ajax({
+            url: 'http://client.com:7777/payScriptPromise',
+            method:'get'
+            // dataType: 'jsonp',
+            // success: function (result) {
+            //     alert('这是调用的客户端 callback 函数,剩余存款为：' + result)
+            // }
+        }).then(function(result){
+            console.log('成功'+ result)
+            return ('成功1')
+        },function(result){
+            console.log('失败'+ result)
+            return ('失败1')
+        }).then((result)=>{
+            console.log(result)
+        },(result)=>{
+            console.log(result)
+        })
     }
 }
