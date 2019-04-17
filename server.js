@@ -25,12 +25,50 @@ var server = http.createServer(function (request, response) {
         response.setHeader('Content-Type', 'text/css')
         response.write(string)
         response.end()
+    } else if (path === '/css/signup.css') {
+        var string = fs.readFileSync('./css/signup.css', 'utf-8')
+        response.statusCode = 200
+        response.setHeader('Content-Type', 'text/css')
+        response.write(string)
+        response.end()
     } else if (path === '/main.js') {
         var string = fs.readFileSync('./main.js', 'utf-8')
         response.statusCode = 200
         response.setHeader('Content-Type', 'text/javascript')
         response.write(string)
         response.end()
+    } else if (path === '/sign_up') {
+        var string = fs.readFileSync('./sign_up.html', 'utf-8')
+        response.statusCode = 200
+        response.setHeader('Content-Type', 'text/html;charset=utf-8')
+        response.write(string)
+        response.end()
+    } else if (path === '/signup' && method.toUpperCase() === 'POST') {
+        let body = []
+        request.on('data', (chunk) => {
+            body.push(chunk)
+        }).on('end', () => {
+            body = Buffer.concat(body).toString()
+            let result = {}
+            let arr = body.split('&')
+            arr.forEach(element => {
+                let parts = element.split('=')
+                let key = parts[0]
+                let value = parts[1]
+                result[key] = value
+            })
+            let {email,password,confirmpsd} = result
+            if(email.indexOf('%4') === -1 || password !== confirmpsd){
+                response.statusCode = 400
+                response.setHeader('Content-Type','application/json;charset=utf-8')
+                response.write('{"errors":"email error or password error"}')
+            }else{
+                response.statusCode = 200
+                response.setHeader('Content-Type','application/json;charset=utf-8')
+                response.write('{"success":"regist success!"}')
+            }
+            response.end()
+        })
     } else if (path === '/payForm' && method.toUpperCase() === 'POST') {
         var amount = fs.readFileSync('./db', 'utf-8')
         if (Math.random() > 0.5) {
@@ -67,7 +105,7 @@ var server = http.createServer(function (request, response) {
             response.write(` 
             alert("script方法打钱成功(此消息发自服务器)")
             amount.innerText = amount.innerText - 1')
-            `) 
+            `)
         } else {
             response.statusCode = 400
             // response.write('打钱失败')
@@ -179,7 +217,7 @@ var server = http.createServer(function (request, response) {
     } else if (path === '/AJAXJSONCrossCORS') {
         if (Math.random() > 0.5) {
             response.setHeader('Content-Type', 'text/json')
-            response.setHeader('Access-Control-Allow-Origin','http://client.com:7777')
+            response.setHeader('Access-Control-Allow-Origin', 'http://client.com:7777')
             response.statusCode = 200
             response.write(`
             {
@@ -215,7 +253,7 @@ var server = http.createServer(function (request, response) {
                     "body":"i love you"
                 }
             }
-            `) 
+            `)
         } else {
             response.statusCode = 400
             response.write(` 
@@ -226,7 +264,7 @@ var server = http.createServer(function (request, response) {
                     "body":"xxx xxx xxx"
                 }
             }
-            `) 
+            `)
         }
         response.end()
     } else {
